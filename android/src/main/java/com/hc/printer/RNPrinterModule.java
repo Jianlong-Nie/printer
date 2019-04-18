@@ -1,5 +1,5 @@
 
-package com.reactlibrary;
+package com.hc.printer;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;

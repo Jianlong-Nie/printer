@@ -1,5 +1,5 @@
 
-package com.reactlibrary;
+package com.hc.printer;
 
 import java.util.Arrays;
 import java.util.Collections;

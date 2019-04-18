@@ -1,4 +1,4 @@
-package com.reactlibrary;
+package com.hc.printer;
 
 /**
  * 定义全局参数

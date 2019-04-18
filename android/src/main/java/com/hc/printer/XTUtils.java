@@ -1,4 +1,4 @@
-package com.reactlibrary;
+package com.hc.printer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
