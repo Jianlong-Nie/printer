@@ -142,6 +142,8 @@ public class XTUtils {
 		ReadableMap userInfo = info.getMap("userInfo");
 		ReadableMap bodyfat = info.getMap("bodyfat");
 		ReadableMap size = info.getMap("size");
+		ReadableMap commandSize = info.getMap("commandSize");
+
 		mPrinter.initPrinter();
 		mPrinter.setFont(0, 0, 0, 0, 0);
 		//mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
@@ -184,24 +186,43 @@ public class XTUtils {
 		sb.append("                            "+ "\n");
 		mPrinter.printText(sb.toString()); // 打印
 
-
 		sb = new StringBuffer();
 
 		mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
 		mPrinter.setFont(0, 0, 0, 0, 0);
-		mPrinter.printText("---------您的健康指数--------" + "\n");
+		mPrinter.printText("---------您的推荐尺码--------" + "\n");
 		mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
 		// 字号使用默认
 		mPrinter.setFont(0, 0, 0, 0, 0);
 		sb.append("                            "+ "\n");
-		sb.append("体脂："+bodyfat.getString("bodyFat")+"\n"+ "肌肉："+bodyfat.getString("muscle")+"\n");
-		sb.append("骨量："+bodyfat.getString("bone")+"\n"+ "基础代谢："+bodyfat.getString("baseCost")+"\n");
-		sb.append("水分："+bodyfat.getString("water")+"\n"+ "内脏脂肪："+bodyfat.getString("organFat")+"\n");
-		sb.append("BMI: " + size.getString("bmi")+"\n");
+		sb.append("上衣："+commandSize.getString("jacketSize")+"   "+ "下衣："+commandSize.getString("trousersSize")+"\n");
+		sb.append("帽号："+commandSize.getDouble("hatSize")+"   "+ "鞋号："+commandSize.getString("shoesSize")+"\n");
+		sb.append("" +commandSize.getString("bodyType") + "：" + commandSize.getString("typeDesc")+"\n");
 
 		sb.append("                            "+ "\n");
 		sb.append("                            "+ "\n");
 		mPrinter.printText(sb.toString()); // 打印
+
+		if (bodyfat != null) {
+			sb = new StringBuffer();
+
+			mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
+			mPrinter.setFont(0, 0, 0, 0, 0);
+			mPrinter.printText("---------您的健康指数--------" + "\n");
+			mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
+			// 字号使用默认
+			mPrinter.setFont(0, 0, 0, 0, 0);
+			sb.append("                            "+ "\n");
+			sb.append("体脂："+bodyfat.getString("bodyFat")+"\n"+ "肌肉："+bodyfat.getString("muscle")+"\n");
+			sb.append("骨量："+bodyfat.getString("bone")+"\n"+ "基础代谢："+bodyfat.getString("baseCost")+"\n");
+			sb.append("水分："+bodyfat.getString("water")+"\n"+ "内脏脂肪："+bodyfat.getString("organFat")+"\n");
+			sb.append("BMI: " + size.getString("bmi")+"\n");
+
+			sb.append("                            "+ "\n");
+			sb.append("                            "+ "\n");
+			mPrinter.printText(sb.toString()); // 打印
+		}
+
 
 
 		mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
