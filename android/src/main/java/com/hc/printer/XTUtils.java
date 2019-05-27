@@ -187,22 +187,36 @@ public class XTUtils {
 		mPrinter.printText(sb.toString()); // 打印
 
 		if (commandSize != null) {
-			sb = new StringBuffer();
+			Boolean isSize = true;
+			try{
+				commandSize.getString("jacketSize");
+				commandSize.getDouble("hatSize");
+				commandSize.getString("trousersSize");
+				commandSize.getString("shoesSize");
 
-			mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
-			mPrinter.setFont(0, 0, 0, 0, 0);
-			mPrinter.printText("---------您的推荐尺码--------" + "\n");
-			mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
-			// 字号使用默认
-			mPrinter.setFont(0, 0, 0, 0, 0);
-			sb.append("                            "+ "\n");
-			sb.append("上衣："+commandSize.getString("jacketSize")+"   "+ "下衣："+commandSize.getString("trousersSize")+"\n");
-			sb.append("帽号："+commandSize.getDouble("hatSize")+"   "+ "鞋号："+commandSize.getString("shoesSize")+"\n");
-			sb.append("" +commandSize.getString("bodyType") + "：" + commandSize.getString("typeDesc")+"\n");
+				isSize = true;
+			}catch (Exception e){
+				isSize = false;
+				Log.d("dayinxinxi","isSize"+false+isSize);
+			}
+			Log.d("dayinxinxiaas","isSize"+false+isSize);
+			if (isSize==true){
+				sb = new StringBuffer();
+				mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
+				mPrinter.setFont(0, 0, 0, 0, 0);
+				mPrinter.printText("---------您的推荐尺码--------" + "\n");
+				mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
+				// 字号使用默认
+				mPrinter.setFont(0, 0, 0, 0, 0);
+				sb.append("                            "+ "\n");
+				sb.append("上衣："+commandSize.getString("jacketSize")+"   "+ "下衣："+commandSize.getString("trousersSize")+"\n");
+				sb.append("帽号："+commandSize.getDouble("hatSize")+"   "+ "鞋号："+commandSize.getString("shoesSize")+"\n");
+				sb.append("" +commandSize.getString("bodyType") + "：" + commandSize.getString("typeDesc")+"\n");
 
-			sb.append("                            "+ "\n");
-			sb.append("                            "+ "\n");
-			mPrinter.printText(sb.toString()); // 打印
+				sb.append("                            "+ "\n");
+				sb.append("                            "+ "\n");
+				mPrinter.printText(sb.toString()); // 打印
+			}
 		}
 
 		if (bodyfat != null) {
