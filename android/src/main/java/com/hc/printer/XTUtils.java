@@ -143,6 +143,7 @@ public class XTUtils {
 		ReadableMap bodyfat = info.getMap("bodyfat");
 		ReadableMap size = info.getMap("size");
 		ReadableMap commandSize = info.getMap("commandSize");
+		ReadableMap appInfo = info.getMap("appInfo");
 
 		mPrinter.initPrinter();
 		mPrinter.setFont(0, 0, 0, 0, 0);
@@ -243,13 +244,17 @@ public class XTUtils {
 
 		mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
 		mPrinter.setFont(0, 0, 0, 0, 0);
-		mPrinter.printText("更多信息请关注梦多体征检测平台" + "\n");
-		mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
+		try {
+			mPrinter.printText(appInfo.getString("ewmTips") + "\n");
+			mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
 
-		mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
-		Barcode barcode2 = new Barcode(PrinterConstants.BarcodeType.QRCODE, 2, 3, 6,
-				"http://weixin.qq.com/r/bS4pMYbE_tuFrcJS93t-");
-		mPrinter.printBarCode(barcode2);
+			mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
+			Barcode barcode2 = new Barcode(PrinterConstants.BarcodeType.QRCODE, 2, 3, 6,
+					appInfo.getString("ewmStr"));
+			mPrinter.printBarCode(barcode2);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 //		sb = new StringBuffer();
 //		sb.append("                            "+ "\n");
@@ -264,7 +269,6 @@ public class XTUtils {
 		mPrinter.setPrinter(Command.PRINT_AND_WAKE_PAPER_BY_LINE, 3);
 
 		mPrinter.cutPaper(65, 50);
-
 	}
 
 	public static void printTable1(Resources resources, PrinterInstance mPrinter) {
