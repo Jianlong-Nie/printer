@@ -251,53 +251,47 @@ public class XTUtils {
 
 		mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
 		mPrinter.setFont(0, 0, 0, 0, 0);
-		try {
-			mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
-			mPrinter.printText(appInfo.getString("ewmTips") + "\n");
-			mPrinter.printText("                            " + "\n");
-			try {
-				mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
-				Barcode barcode2 = new Barcode(PrinterConstants.BarcodeType.QRCODE, 2, 3, 6,
-						appInfo.getString("ewmStr"));
-				mPrinter.printBarCode(barcode2);
-				mPrinter.printText("                            " + "\n");
-			} catch (Exception e) {
-            	e.printStackTrace();
-			}
-			PrinterConstants.paperWidth = 384;
-			try {
-				Bitmap bitmap = getBitmapFromURL(appInfo.getString("ewmUrl"));
-				bitmap = Utils.zoomImage(bitmap, PrinterConstants.paperWidth * 0.75);
-				mPrinter.printColorImg2Gray(bitmap, PrinterConstants.PAlign.CENTER, 0, false);
-				mPrinter.printText("                            " + "\n");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			try {
-				Bitmap bitmap = getBitmapFromBase64(appInfo.getString("ewmBase64"));
-				bitmap = Utils.zoomImage(bitmap, PrinterConstants.paperWidth * 0.75);
-				mPrinter.printColorImg2Gray(bitmap, PrinterConstants.PAlign.CENTER, 0, false);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 
+		try {
+			ReadableArray ewmTipsArr = appInfo.getArray("ewmTips");
+			for (int i = 0; i < ewmTipsArr.toArrayList().size(); i++) {
+				mPrinter.printText( ewmTipsArr.getString(i) + "\n");
+			}
+			mPrinter.printText("                            " + "\n");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-//		sb = new StringBuffer();
-//		sb.append("                            "+ "\n");
-//		sb.append("                            "+ "\n");
-//		sb.append("                            "+ "\n");
-//		sb.append("                            "+ "\n");
-//		mPrinter.printText(sb.toString()); // 打印
+		try {
+			mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
+			Barcode barcode2 = new Barcode(PrinterConstants.BarcodeType.QRCODE, 2, 3, 6,
+					appInfo.getString("ewmStr"));
+			mPrinter.printBarCode(barcode2);
+			mPrinter.printText("                            " + "\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		PrinterConstants.paperWidth = 384;
+		try {
+			Bitmap bitmap = getBitmapFromURL(appInfo.getString("ewmUrl"));
+			bitmap = Utils.zoomImage(bitmap, PrinterConstants.paperWidth * 0.75);
+			mPrinter.printColorImg2Gray(bitmap, PrinterConstants.PAlign.CENTER, 0, false);
+			mPrinter.printText("                            " + "\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			Bitmap bitmap = getBitmapFromBase64(appInfo.getString("ewmBase64"));
+			bitmap = Utils.zoomImage(bitmap, PrinterConstants.paperWidth * 0.75);
+			mPrinter.printColorImg2Gray(bitmap, PrinterConstants.PAlign.CENTER, 0, false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		mPrinter.setFont(0, 0, 0, 0, 0);
 
 		mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
 		mPrinter.setPrinter(Command.PRINT_AND_WAKE_PAPER_BY_LINE, 3);
-
-
 
 		mPrinter.cutPaper(65, 50);
 	}
