@@ -4,10 +4,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.Inet4Address;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.URL;
 import java.util.Enumeration;
 
 import com.facebook.react.bridge.ReadableMap;
@@ -15,10 +16,14 @@ import com.printer.sdk.Barcode;
 import com.printer.sdk.PrinterConstants;
 import com.printer.sdk.PrinterConstants.Command;
 import com.printer.sdk.PrinterInstance;
+import com.printer.sdk.utils.Utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 
 @SuppressLint("DefaultLocale")
@@ -138,7 +143,7 @@ public class XTUtils {
 		return s;
 	}
 
-	public static void printNote(ReadableMap info, PrinterInstance mPrinter) {
+	public static void printNote(ReadableMap info, PrinterInstance mPrinter, Context context) {
 		ReadableMap userInfo = info.getMap("userInfo");
 		ReadableMap bodyfat = info.getMap("bodyfat");
 		ReadableMap size = info.getMap("size");
@@ -158,14 +163,17 @@ public class XTUtils {
 		mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
 		// 字号使用默认
 		mPrinter.setFont(0, 0, 0, 0, 0);
-		sb.append("所属任务： "+ info.getString("renwu")+"\n");
-		sb.append("客户姓名： " + userInfo.getString("customerName")+"\n"+ "性别："+userInfo.getString("sex")+"\n");
-		sb.append("证件号码： " + userInfo.getString("uniqueCode")+"\n");
-		sb.append("手机号码： " + userInfo.getString("mobile")+ "\n");
-		sb.append("                            "+ "\n");
-		sb.append("                            "+ "\n");
-		mPrinter.printText(sb.toString()); // 打印
-
+		try {
+			sb.append("所属任务： "+ info.getString("renwu")+"\n");
+			sb.append("客户姓名： " + userInfo.getString("customerName")+"\n"+ "性别："+userInfo.getString("sex")+"\n");
+			sb.append("证件号码： " + userInfo.getString("uniqueCode")+"\n");
+			sb.append("手机号码： " + userInfo.getString("mobile")+ "\n");
+			sb.append("                            "+ "\n");
+			sb.append("                            "+ "\n");
+			mPrinter.printText(sb.toString()); // 打印
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		sb = new StringBuffer();
 
@@ -178,30 +186,23 @@ public class XTUtils {
 		mPrinter.setFont(0, 0, 0, 0, 0);
 
 		sb.append("                            "+ "\n");
-		sb.append("身高："+userInfo.getDouble("height")+"   "+ "体重："+userInfo.getDouble("weight")+"\n");
-		sb.append("头围："+size.getString("headCricle")+"   "+ "胸围："+size.getString("chest")+"\n");
-		sb.append("颈围："+size.getString("neck")+"   "+ "肩宽："+size.getString("shoulder")+"\n");
-		sb.append("裤腰："+size.getString("abdomen")+"   "+ "袖长："+size.getString("arm")+"\n");
-		sb.append("臀围："+size.getString("buttock")+"   "+ "裤长："+size.getString("leg")+"\n");
-		sb.append("                            "+ "\n");
-		sb.append("                            "+ "\n");
-		mPrinter.printText(sb.toString()); // 打印
+		try {
+			sb.append("身高："+userInfo.getDouble("height")+"   "+ "体重："+userInfo.getDouble("weight")+"\n");
+			sb.append("头围："+size.getString("headCricle")+"   "+ "胸围："+size.getString("chest")+"\n");
+			sb.append("颈围："+size.getString("neck")+"   "+ "肩宽："+size.getString("shoulder")+"\n");
+			sb.append("裤腰："+size.getString("abdomen")+"   "+ "袖长："+size.getString("arm")+"\n");
+			sb.append("臀围："+size.getString("buttock")+"   "+ "裤长："+size.getString("leg")+"\n");
+			sb.append("                            "+ "\n");
+			sb.append("                            "+ "\n");
+			mPrinter.printText(sb.toString()); // 打印
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
 
 		if (commandSize != null) {
-			Boolean isSize = true;
 			try{
-				commandSize.getString("jacketSize");
-				commandSize.getDouble("hatSize");
-				commandSize.getString("trousersSize");
-				commandSize.getString("shoesSize");
-
-				isSize = true;
-			}catch (Exception e){
-				isSize = false;
-				Log.d("dayinxinxi","isSize"+false+isSize);
-			}
-			Log.d("dayinxinxiaas","isSize"+false+isSize);
-			if (isSize==true){
 				sb = new StringBuffer();
 				mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
 				mPrinter.setFont(0, 0, 0, 0, 0);
@@ -217,12 +218,15 @@ public class XTUtils {
 				sb.append("                            "+ "\n");
 				sb.append("                            "+ "\n");
 				mPrinter.printText(sb.toString()); // 打印
+
+			}catch (Exception e){
+				e.printStackTrace();
 			}
 		}
 
 		if (bodyfat != null) {
 			sb = new StringBuffer();
-
+			try{
 			mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
 			mPrinter.setFont(0, 0, 0, 0, 0);
 			mPrinter.printText("---------您的健康指数--------" + "\n");
@@ -238,6 +242,9 @@ public class XTUtils {
 			sb.append("                            "+ "\n");
 			sb.append("                            "+ "\n");
 			mPrinter.printText(sb.toString()); // 打印
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 		}
 
 
@@ -245,13 +252,35 @@ public class XTUtils {
 		mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
 		mPrinter.setFont(0, 0, 0, 0, 0);
 		try {
-			mPrinter.printText(appInfo.getString("ewmTips") + "\n");
 			mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
+			mPrinter.printText(appInfo.getString("ewmTips") + "\n");
+			mPrinter.printText("                            " + "\n");
+			try {
+				mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
+				Barcode barcode2 = new Barcode(PrinterConstants.BarcodeType.QRCODE, 2, 3, 6,
+						appInfo.getString("ewmStr"));
+				mPrinter.printBarCode(barcode2);
+				mPrinter.printText("                            " + "\n");
+			} catch (Exception e) {
+            	e.printStackTrace();
+			}
+			PrinterConstants.paperWidth = 384;
+			try {
+				Bitmap bitmap = getBitmapFromURL(appInfo.getString("ewmUrl"));
+				bitmap = Utils.zoomImage(bitmap, PrinterConstants.paperWidth * 0.75);
+				mPrinter.printColorImg2Gray(bitmap, PrinterConstants.PAlign.CENTER, 0, false);
+				mPrinter.printText("                            " + "\n");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				Bitmap bitmap = getBitmapFromBase64(appInfo.getString("ewmBase64"));
+				bitmap = Utils.zoomImage(bitmap, PrinterConstants.paperWidth * 0.75);
+				mPrinter.printColorImg2Gray(bitmap, PrinterConstants.PAlign.CENTER, 0, false);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
-			mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
-			Barcode barcode2 = new Barcode(PrinterConstants.BarcodeType.QRCODE, 2, 3, 6,
-					appInfo.getString("ewmStr"));
-			mPrinter.printBarCode(barcode2);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -268,7 +297,29 @@ public class XTUtils {
 		mPrinter.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
 		mPrinter.setPrinter(Command.PRINT_AND_WAKE_PAPER_BY_LINE, 3);
 
+
+
 		mPrinter.cutPaper(65, 50);
+	}
+
+	public static Bitmap getBitmapFromURL(String src) {
+		try {
+			URL url = new URL(src);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setDoInput(true);
+			connection.connect();
+			InputStream input = connection.getInputStream();
+			Bitmap myBitmap = BitmapFactory.decodeStream(input);
+			return myBitmap;
+		} catch (IOException e) {
+			// Log exception
+			return null;
+		}
+	}
+
+	public static Bitmap getBitmapFromBase64(String base64) {
+		byte[] bytes = Base64.decode(base64.split(",")[1] , Base64.DEFAULT);
+		return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 	}
 
 	public static void printTable1(Resources resources, PrinterInstance mPrinter) {
