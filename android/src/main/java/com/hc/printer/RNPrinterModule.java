@@ -96,7 +96,7 @@ public class RNPrinterModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void printBodyInfo(ReadableMap bodyInfo) {
-    XTUtils.printNote(bodyInfo, myPrinter);
+    XTUtils.printNote(bodyInfo, myPrinter, mContext);
 
   }
   @SuppressLint({ "InlinedApi", "NewApi" })
