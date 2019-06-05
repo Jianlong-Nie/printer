@@ -11,6 +11,7 @@ import java.net.SocketException;
 import java.net.URL;
 import java.util.Enumeration;
 
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.printer.sdk.Barcode;
 import com.printer.sdk.PrinterConstants;
