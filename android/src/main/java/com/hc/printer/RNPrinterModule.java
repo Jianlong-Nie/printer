@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Handler;
@@ -20,9 +21,11 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableMap;
+import com.printer.sdk.Barcode;
 import com.printer.sdk.PrinterConstants;
 import com.printer.sdk.PrinterInstance;
 import com.printer.sdk.usb.USBPort;
+import com.printer.sdk.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,10 +98,65 @@ public class RNPrinterModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void initPrinter() {
+    myPrinter.initPrinter();
+  }
+
+  @ReactMethod
+  public void setPrinter(int command, int value) {
+    myPrinter.setPrinter(command, value);
+  }
+
+  @ReactMethod
+  public void setFont(int mCharacterType, int mWidth, int mHeight, int mBold, int mUnderline) {
+    myPrinter.setFont(mCharacterType, mWidth, mHeight, mBold, mUnderline);
+  }
+
+  @ReactMethod
+  public void paperWidth(int width) {
+    PrinterConstants.paperWidth = width;
+  }
+
+  @ReactMethod
+  public void cutPaper(int cutterType, int n) {
+    myPrinter.cutPaper(cutterType, n);
+  }
+
+  @ReactMethod
   public void printBodyInfo(ReadableMap bodyInfo) {
     XTUtils.printNote(bodyInfo, myPrinter, mContext);
-
   }
+
+  @ReactMethod
+  public void printBarCode(String barCodeStr) {
+    Barcode barcode2 = new Barcode(PrinterConstants.BarcodeType.QRCODE, 2, 3, 6,
+            barCodeStr);
+    myPrinter.printBarCode(barcode2);
+  }
+
+  @ReactMethod
+  public void printText(String printStr) {
+    myPrinter.printText(printStr + "\n");
+  }
+
+  @ReactMethod
+  public void printImageFromUrl(String imgUrl) {
+    Bitmap bitmap = XTUtils.getBitmapFromURL(imgUrl);
+    printBitmap(bitmap);
+  }
+
+  @ReactMethod
+  public void printImageFromBase64(String base64) {
+    Bitmap bitmap = XTUtils.getBitmapFromBase64(base64);
+    printBitmap(bitmap);
+  }
+
+  void printBitmap(Bitmap bitmap) {
+    bitmap = Utils.zoomImage(bitmap, PrinterConstants.paperWidth * 0.75);
+    myPrinter.printColorImg2Gray(bitmap, PrinterConstants.PAlign.CENTER, 0, false);
+  }
+
+
   @SuppressLint({ "InlinedApi", "NewApi" })
   public void usbAutoConn(UsbManager manager) {
     doDiscovery(manager);
